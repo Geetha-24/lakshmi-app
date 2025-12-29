@@ -1,0 +1,96 @@
+/* ----------------------------------------------------------
+   🟩 SIDEBAR (Background, Text, Icons)
+---------------------------------------------------------- */
+
+/* Sidebar background */
+.filament-sidebar {
+    background-color: #0f172a !important; /* Dark navy for contrast */
+}
+
+/* Sidebar section headings */
+.filament-sidebar-group-label {
+    color: #a7f3d0 !important; /* teal-200 */
+    font-weight: 600;
+}
+
+/* Sidebar icons */
+.filament-sidebar-item-icon {
+    color: #5eead4 !important; /* teal-300 */
+}
+
+/* Sidebar text */
+.filament-sidebar-item-label {
+    color: #e2e8f0 !important; /* slate-200 */
+}
+
+/* ----------------------------------------------------------
+   🟩 SIDEBAR HOVER EFFECT
+---------------------------------------------------------- */
+.filament-sidebar-item:hover,
+.filament-sidebar-item.active {
+    background-color: rgba(20, 184, 166, 0.15) !important; /* teal hover */
+}
+
+.filament-sidebar-item:hover .filament-sidebar-item-icon,
+.filament-sidebar-item.active .filament-sidebar-item-icon {
+    color: #2dd4bf !important; /* teal-400 */
+}
+
+.filament-sidebar-item:hover .filament-sidebar-item-label,
+.filament-sidebar-item.active .filament-sidebar-item-label {
+    color: #ffffff !important;
+    font-weight: 500;
+}
+
+/* ----------------------------------------------------------
+   🟩 MAIN PANEL BACKGROUND (Contrast With Sidebar)
+---------------------------------------------------------- */
+.filament-main {
+    background-color: #f9fafb !important; /* clean light gray */
+}
+
+/* ----------------------------------------------------------
+   🟩 TOPBAR / HEADER COLOR MATCHING THEME (TEAL)
+---------------------------------------------------------- */
+.filament-main-topbar {
+    background-color: #14b8a6 !important;  /* teal-500 */
+    color: #ffffff !important;
+}
+
+/* User menu text */
+.filament-main-topbar .fi-user-name {
+    color: #ecfeff !important; /* teal-50 */
+}
+
+/* ----------------------------------------------------------
+   🟩 BUTTONS / BADGES (THEME = TEAL)
+---------------------------------------------------------- */
+.filament-button {
+    border-radius: 8px !important;
+}
+
+/* Primary button */
+.filament-button.filament-button-primary {
+    background-color: #14b8a6 !important;   /* teal-500 */
+    border-color: #0d9488 !important;       /* teal-600 */
+    color: white !important;
+}
+
+.filament-button.filament-button-primary:hover {
+    background-color: #0d9488 !important;   /* teal-600 */
+}
+
+/* ----------------------------------------------------------
+   🟩 TABLE ROW HOVER (SOFT TEAL)
+---------------------------------------------------------- */
+.filament-tables-row:hover {
+    background-color: rgba(20, 184, 166, 0.08) !important;
+}
+
+/* ----------------------------------------------------------
+   🟩 PAGINATION ACTIVE PAGE
+---------------------------------------------------------- */
+.filament-tables-pagination button[data-active="true"] {
+    background-color: #14b8a6 !important;
+    color: white !important;
+}

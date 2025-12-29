@@ -1,0 +1,116 @@
+product_variant table  purchase price+tax5%+profit 50 = selling price  stock  initial
+                        4650+250+50 = 4900 10 = initial 14/10/25   sales 5  remainder 5
+                        4550+220+50 = 4820 25   = second purchase 17/10/25  sales 0 remainder 25
+
+                        now product_variant table what was the selling price we need to set and stock value.
+
+                        in sales what was the default value i want to show in product unit price value?
+                        how to upgrade the new stock to product_variant table and move to sale in profitable way
+                        how to store those data in efficient way?the storage will give very clear data if i say 30 days later.
+
+Now the above point is clear
+1.in frontend i have purhase order detail screen.In that based on invoice i entered product purchase details
+2.From that how i move to product_variant table to update stock details.Which means how screen design i made.one thing i do it manually 
+In which way i do it i need a screen design example.
+
+
+
+
+
+purchaseorder view page la 
+order detail info
+one by one stock updation action la
+purchasebatches create one line entry
+purchaseorderdetails we need to update posted_qty,is_posted,posted_at
+is_posted => qty=posted_qty = true else false
+product_variant  we need to update stock,selling_price,purchase_price
+stock ledger one line entry
+
+stock_ledger
+purchase_create
+purchase_order_edit_stock_updation
+purchase_delete
+
+
+
+Purchase -> stock posting
+purchase_batch
+po_id
+po_detail_id
+batch_code => unique
+total_stock_in => total posted 
+sold_qty => total saled
+is_sold => false
+purchase price
+selling price
+
+purchase_stock_posting
+pv_id
+batch_code
+quantity
+posted_qty
+remaining_qty
+date
+
+sale_movements
+sales_id
+pv_id => product_variant_id
+pb_id => purchase_batch_id
+saled_qty => from sales order
+sold_date
+
+
+
+
+on sales screen
+select product_variant
+List out posting started batches with remaining qty
+remaining_qty = total_stock_in-sold_qty
+
+if user select batch and move to sale order
+ on sale backend logic
+ salesOrder table
+ salesOrderItem table => 
+ sale stock movements
+ update sold_qty in purchase_batch table
+
+
+
+
+
+In sales screen
+choose product_variant
+show overall stock availablity from purchase_batch (sum of total_stock_in - sum of sold_qty) where po_id is_sold =false
+Show selling_price (from purchase_batch table took highest selling_price)
+
+in Profit/loss
+pv_id
+
+
+select SUM(total_stock_in - sold_qty),max(selling_price),min(purchase_price) from purchase_batches
+WHERE pv_id = 9
+AND (total_stock_in - sold_qty) > 0;
+
+
+
+In all purchase_price column expect po and po_detail table we need store landed_cost_per_unit(without profit)
+need to add one more column "landed_profit_cost_per_unit"
+
+tax calculation
+total amount tax calculation
+
+sales order edit screen how to approach?
+suppose if customer wants to add more/less
+
+sales order => order item screen ui changes
+try to implement table row expand.
+
+
+
+
+
+
+
+
+BAT-PD-PODID
+

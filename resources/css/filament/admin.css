@@ -1,0 +1,23 @@
+/* ============================= */
+/* Navigation Group (Header)     */
+/* ============================= */
+.fi-sidebar-group-label {
+    color: #0f766e !important; /* Teal / Green */
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+/* ============================= */
+/* Navigation Resources (Items)  */
+/* ============================= */
+.fi-sidebar-item-label {
+    color: #334155 !important; /* Slate */
+    font-weight: 500;
+}
+
+/* Active resource */
+.fi-sidebar-item-active .fi-sidebar-item-label {
+    color: #2563eb !important; /* Blue */
+    font-weight: 600;
+}
