@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\StockResource\Pages;
 use App\Filament\Resources\StockResource\RelationManagers;
-use App\Models\Stock;
+use App\Models\ProductVariant;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,9 +15,65 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class StockResource extends Resource
 {
-    protected static ?string $model = Stock::class;
+    protected static ?string $model = ProductVariant::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+      protected static ?string $navigationGroup = 'Stock Management';
+    protected static ?string $navigationLabel = 'Stock';
+
+    public static function getEloquentQuery(): Builder
+{
+    return parent::getEloquentQuery()
+
+        // Purchased Qty
+        ->withSum([
+            'purchaseBatch as purchased_stock' => fn ($q) =>
+                $q->where('status', 0)->whereNull('deleted_at')
+        ], 'purchased_quantity')
+
+        // Posted Stock
+        ->withSum([
+            'purchaseBatch as posted_stock' => fn ($q) =>
+                $q->where('status', 0)->whereNull('deleted_at')
+        ], 'total_stock_in')
+
+        // Sold Stock
+        ->withSum([
+            'purchaseBatch as sold_stock' => fn ($q) =>
+                $q->where('status', 0)->whereNull('deleted_at')
+        ], 'sold_qty')
+
+        // Available Stock (IN - OUT)
+        ->selectSub(function ($q) {
+            $q->from('purchase_batches')
+                ->selectRaw('
+                    COALESCE(SUM(total_stock_in - sold_qty), 0)
+                ')
+                ->whereColumn(
+                    'purchase_batches.pv_id',
+                    'product_variants.id'
+                )
+                ->where('status', 0)
+                ->whereNull('deleted_at')
+                ->whereColumn('total_stock_in', '>', 'sold_qty');
+        }, 'available_stock')
+
+        // Unposted Stock
+        ->selectSub(function ($q) {
+            $q->from('purchase_batches')
+                ->selectRaw('
+                    COALESCE(SUM(purchased_quantity - total_stock_in), 0)
+                ')
+                ->whereColumn(
+                    'purchase_batches.pv_id',
+                    'product_variants.id'
+                )
+                ->where('status', 0)
+                ->whereNull('deleted_at')
+                ->whereColumn('purchased_quantity', '!=', 'total_stock_in');
+        }, 'unposted_stock');
+}
 
     public static function form(Form $form): Form
     {
@@ -31,13 +87,87 @@ class StockResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('p_name')->label('Product Name')->searchable()
+                ->url(fn ($record) =>
+                    route(
+                        'filament.admin.resources.product-variants.edit',
+                        $record
+                    )
+                )
+                ->color('primary'),
+
+                //  Tables\Columns\TextColumn::make('purchased_stock')->label('Purchased')
+                // ->getStateUsing(function ($record){
+                //     $pur_qty = $record->purchaseBatch()->where('status',0)->where('deleted_at','=',null)
+                //     ->sum('purchased_quantity');
+
+                //     return $pur_qty;
+                // }),
+
+                // Tables\Columns\TextColumn::make('posted_stock')->label('Posted Stock')
+                // ->getStateUsing(function ($record){
+                //     $stock_posted = $record->purchaseBatch()->where('status',0)->where('deleted_at','=',null)
+                //     ->sum('total_stock_in');
+
+                //     return $stock_posted;
+                // }),
+
+
+                // Tables\Columns\TextColumn::make('unposted_stock')->label('Unposted Stock')
+                // ->getStateUsing(function ($record)
+                // {
+                //      $stock_posted = $record->purchaseBatch()->where('status',0)->where('deleted_at','=',null)
+                //     ->whereColumn('total_stock_in','!=','purchased_quantity')->sum('total_stock_in');
+
+                //     $purchased_qty = $record->purchaseBatch()->where('status',0)->where('deleted_at','=',null)
+                //     ->whereColumn('total_stock_in','!=','purchased_quantity')->sum('purchased_quantity');
+
+
+                //     return $purchased_qty - $stock_posted;
+                // }),
+
+                // Tables\Columns\TextColumn::make('available_stock')->label('Posted Stock In hand')
+                // ->getStateUsing(function ($record){
+                //     $stock_in = $record->purchaseBatch()->where('status',0)->where('deleted_at','=',null)
+                //     ->whereColumn('total_stock_in','>','sold_qty')->sum('total_stock_in');
+
+                //     $stock_out =  $record->purchaseBatch()->where('status',0)->where('deleted_at','=',null)
+                //     ->whereColumn('total_stock_in','>','sold_qty')->sum('sold_qty');
+
+                //     return $stock_in - $stock_out;
+                // }),
+                //  Tables\Columns\TextColumn::make('Sold_stock')->label('Sold Stock')
+                // ->getStateUsing(function ($record){
+                //     $sold_stock = $record->purchaseBatch()->where('status',0)->where('deleted_at','=',null)
+                //     ->sum('sold_qty');
+
+                //     return $sold_stock;
+                // })
+
+                Tables\Columns\TextColumn::make('purchased_stock')
+                ->label('Purchased')->default(0),
+
+                Tables\Columns\TextColumn::make('posted_stock')
+                    ->label('Posted Stock')->default(0),
+
+                Tables\Columns\TextColumn::make('unposted_stock')
+                    ->label('Unposted Stock'),
+
+                Tables\Columns\TextColumn::make('available_stock')
+                    ->label('Posted Stock In Hand'),
+
+                Tables\Columns\TextColumn::make('sold_stock')
+                    ->label('Sold Stock')->default(0)
+
+
+
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()->label('Batch'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -49,16 +179,18 @@ class StockResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\PurchaseBatchRelationManager::class,
+            RelationManagers\SaleBatchAllocationRelationManager::class,
         ];
     }
-
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListStocks::route('/'),
             'create' => Pages\CreateStock::route('/create'),
             'edit' => Pages\EditStock::route('/{record}/edit'),
+            'view' => Pages\EditStock::route('/{record}/batch'),
+
         ];
     }
 }

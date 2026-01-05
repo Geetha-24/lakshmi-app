@@ -105,6 +105,7 @@ class ProductVariantResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\DeleteAction::make()->action(function ($record) {
                     $record->status = 1;
                     $record->save();
