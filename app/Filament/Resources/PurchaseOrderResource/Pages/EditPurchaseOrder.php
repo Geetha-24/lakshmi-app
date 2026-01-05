@@ -16,4 +16,12 @@ class EditPurchaseOrder extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return route(
+        'filament.admin.resources.purchase-orders.view',
+        ['record' => $this->record->id]
+        );
+    }
 }

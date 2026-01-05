@@ -53,6 +53,14 @@ class CustomerResource extends Resource
                 Tables\columns\TextColumn::make('name')->label('Customer Name'),
                 Tables\Columns\TextColumn::make('mill_name')->label('Shop Name')->searchable(),
                 Tables\Columns\TextColumn::make('contactno')->label('Phone No'),
+                Tables\Columns\TextColumn::make('balance')
+                ->label('Balance')
+                ->getStateUsing(function ($record) {
+                    return \App\Models\CustomersLedger::where('c_id', $record->id)
+                        ->orderByDesc('created_at')
+                        ->value('balance_after') ?? 0;
+                })
+                ->money('INR', true),
                 Tables\Columns\TextColumn::make('type')->label('Customer Type')
                 ->formatStateUsing(fn ($state) => (string) $state === '0' ? 'WholeSale' : 'Retail'),
                 Tables\Columns\TextColumn::make('status')->label('Status')

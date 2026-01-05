@@ -15,7 +15,7 @@ class SalesOrder extends Model
 
     protected $fillable = [
         'so_number','customer_id','order_date','status',
-        'subtotal','tax_amount','total_amount','total_profit'
+        'subtotal','tax_amount','total_amount','total_profit','paid_amount','balance_amount','payment_status'
     ];
 
     public function Customer()
@@ -43,4 +43,10 @@ class SalesOrder extends Model
 
         return "SLT-{$nextNumber}-{$datePart}";
     }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class,'so_id','id');
+    }
+
 }

@@ -57,7 +57,17 @@ class PurchaseOrderDetailsTable extends BaseWidget
 
     protected function getTableActions(): array
     {
+
         return [
+             Tables\Actions\Action::make('View')
+                    ->label('View')
+                    ->icon('heroicon-o-plus-circle')
+                    ->color('primary')
+                    ->url(fn ($record) =>
+                        route(
+                            'filament.admin.resources.purchase-order-details.view',
+                            ['record' => $record->id])
+                        ),
             Tables\Actions\Action::make('postStock')
                 ->label(fn ($record) =>
                     $record->posted_qty >= $record->qunatity
@@ -99,5 +109,21 @@ class PurchaseOrderDetailsTable extends BaseWidget
                         ->handle($record, $data['qty']);
                 }),
         ];
+    }
+
+    protected function getTableHeaderActions(): array
+    {
+        return [
+            Tables\Actions\Action::make('addItem')
+                    ->label('Add Item')
+                    ->icon('heroicon-o-plus-circle')
+                    ->color('primary')
+                    ->url(fn () =>
+                        route(
+                            'filament.admin.resources.purchase-order-details.create',
+                            ['purchase_order_id' => $this->record->id]
+                        )
+                    )
+                        ];
     }
 }
