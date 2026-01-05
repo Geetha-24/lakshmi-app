@@ -5,6 +5,7 @@ namespace App\Filament\Resources\PurchaseOrderDetailResource\Pages;
 use App\Filament\Resources\PurchaseOrderDetailResource;
 use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Notifications\Notification;
 
 class CreatePurchaseOrderDetail extends CreateRecord
 {
@@ -18,5 +19,26 @@ class CreatePurchaseOrderDetail extends CreateRecord
         }
 
         return $data;
+    }
+
+    
+
+
+   protected function getRedirectUrl(): string
+    {
+        return route(
+        'filament.admin.resources.purchase-orders.view',
+        ['record' => $this->record->po_id]
+        );
+    }
+
+
+    protected function getCreatedNotification(): ?Notification
+    {
+        return Notification::make()
+        ->success()
+        ->title("Order Details")
+        ->body("The Purchase order has been created successfully");
+
     }
 }

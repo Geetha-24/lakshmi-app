@@ -214,7 +214,7 @@ class PurchaseOrderDetailResource extends Resource
                 //
             ])
             ->actions([
-                // Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make()
                 
                 ->tooltip(fn ($record) =>
@@ -243,6 +243,8 @@ class PurchaseOrderDetailResource extends Resource
             'index' => Pages\ListPurchaseOrderDetails::route('/'),
             'create' => Pages\CreatePurchaseOrderDetail::route('/create'),
             'edit' => Pages\EditPurchaseOrderDetail::route('/{record}/edit'),
+            'view' => Pages\ViewPurchaseOrderDetails::route('/{record}'),
+
         ];
     }
 

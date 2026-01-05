@@ -175,7 +175,7 @@ class SalesOrderResource extends Resource
 
                     Repeater::make('salesOrderDetails')
                         ->relationship('salesOrderDetails')
-                        ->disabled(fn ($record) => $record?->status === 'CONFIRMED')
+                        ->disabled(fn ($record) => $record?->status === 'confirmed')
                         ->columns(6)
                         ->schema([
                             Select::make('pv_id')
@@ -229,20 +229,65 @@ class SalesOrderResource extends Resource
 
                     Placeholder::make('subtotal_preview')
                         ->label('Subtotal')
-                        ->content(fn ($get) =>
-                            collect($get('salesOrderDetails') ?? [])
-                                ->sum(fn ($salesOrderDetails) =>
-                                    (float) ($salesOrderDetails['quantity'] ?? 0) * (float) ($salesOrderDetails['sold_price'] ?? 0)
-                                )
-                        ),
+                        ->content(function ($get) {
+                            $taxRate = 5; // 🔴 change if needed
+
+                            $total = collect($get('salesOrderDetails') ?? [])
+                                ->sum(fn ($item) =>
+                                    (float) ($item['quantity'] ?? 0) *
+                                    (float) ($item['sold_price'] ?? 0)
+                                );
+
+                            if ($total <= 0) {
+                                return '0.00';
+                            }
+
+                            $base = round(
+                                $total / (1 + ($taxRate / 100)),
+                                2
+                            );
+
+                            return number_format($base, 2);
+                        }),
 
                     Placeholder::make('tax_preview')
                         ->label('Tax')
-                        ->content('Calculated at payment'),
+                        ->content(function ($get) {
+
+                            $taxRate = 5;
+
+                            $total = collect($get('salesOrderDetails') ?? [])
+                                ->sum(fn ($item) =>
+                                    (float) ($item['quantity'] ?? 0) *
+                                    (float) ($item['sold_price'] ?? 0)
+                                );
+
+                            if ($total <= 0) {
+                                return '0.00';
+                            }
+
+                            $base = round(
+                                $total / (1 + ($taxRate / 100)),
+                                2
+                            );
+
+                            $tax = round($total - $base, 2);
+
+                            return number_format($tax, 2);
+                        }),
 
                     Placeholder::make('total_preview')
                         ->label('Total')
-                        ->content('Calculated at payment'),
+                        ->content(function ($get) {
+
+                        $total = collect($get('salesOrderDetails') ?? [])
+                            ->sum(fn ($item) =>
+                                (float) ($item['quantity'] ?? 0) *
+                                (float) ($item['sold_price'] ?? 0)
+                            );
+
+                        return number_format($total, 2);
+                    }),
                 ]),
             ]); 
     }
@@ -278,6 +323,8 @@ class SalesOrderResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -302,6 +349,8 @@ class SalesOrderResource extends Resource
             'index' => Pages\ListSalesOrders::route('/'),
             'create' => Pages\CreateSalesOrder::route('/create'),
             'edit' => Pages\EditSalesOrder::route('/{record}/edit'),
+            'view' => Pages\ViewSalesOrder::route('/{record}'),
+
         ];
     } 
     

@@ -18,5 +18,16 @@ class Customer extends Model
         return $this->hasOne(SalesOrder::class,'customer_id','id');
     }
 
+    public function Payment()
+    {
+        return $this->hasMany(Payment::class,'c_id','id');
+
+    }
+
+    public function customerLedger()
+    {
+        return $this->hasOne(CustomersLedger::class,'c_id','id');
+    }
+
 
 }

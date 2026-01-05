@@ -42,4 +42,20 @@ class EditPurchaseOrderDetail extends EditRecord
 
             return $data;
         }
+
+     protected function getRedirectUrl(): string
+    {
+        return route(
+        'filament.admin.resources.purchase-orders.view',
+        ['record' => $this->record->po_id]
+        );
+    }
+
+    protected function getSavedNotification(): ?Notification
+    {
+        return Notification::make()
+        ->success()
+        ->title("Order Details")
+        ->body("The Purchase order has been updated successfully");
+    }
 }

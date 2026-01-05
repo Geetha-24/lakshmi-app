@@ -27,6 +27,6 @@ class EditProduct extends EditRecord
         return Notification::make()
         ->success()
         ->title("Product Updation")
-        ->body("The product has been created successfully");
+        ->body("The product has been updated successfully");
     }
 }

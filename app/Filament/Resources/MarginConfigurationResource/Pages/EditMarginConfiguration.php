@@ -28,6 +28,6 @@ class EditMarginConfiguration extends EditRecord
         return Notification::make()
         ->success()
         ->title("Product Updation")
-        ->body("The product has been created successfully");
+        ->body("The Margin  has been updated successfully");
     }
 }

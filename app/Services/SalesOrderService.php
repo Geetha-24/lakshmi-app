@@ -10,6 +10,7 @@ use App\Models\salesOrderDetails;
 use Illuminate\Support\Facades\DB;
 use App\Services\SalesPricingService;
 use Illuminate\Validation\ValidationException;
+use App\Services\LedgerService;
 
 
 
@@ -176,6 +177,8 @@ class SalesOrderService
 
             $saleTotal  = 0;
             $saleProfit = 0;
+            $saleSubTotal = 0;
+            $saleTax =0;
 
             foreach ($sale->salesOrderDetails as $item) {
 
@@ -186,16 +189,42 @@ class SalesOrderService
                     'line_profit' => $lineProfit
                 ]);
 
+                $taxRate = (float) 5; // eg: 18
+                $lineTotal = (float) $item['line_total'];   // tax-inclusive amount
+
+                $baseAmount = round(
+                    $lineTotal / (1 + ($taxRate / 100)),
+                    2
+                );
+
+                $taxAmount = round(
+                    $lineTotal - $baseAmount,
+                    2
+                );
+                $saleSubTotal +=$baseAmount;
+                $saleTax    +=$taxAmount;
                 $saleTotal  += $item->line_total;
                 $saleProfit += $lineProfit;
             }
 
+
+
             $sale->update([
                 'status'        => 'confirmed',
-                'subtotal'      => $saleTotal,
+                'subtotal'      => $saleSubTotal,
+                'tax_amount'    => $saleTax,
                 'total_amount'  => $saleTotal,
                 'total_profit'  => $saleProfit,
+                'payment_status' => 'UNPAID',
+                'paid_amount' => 0,
+                'balance_amount' => $saleTotal,
             ]);
+            LedgerService::debit(
+            $sale->customer_id,
+            'sales_order',
+            $sale->id,
+            $sale->total_amount
+        );
 
             return $sale;
         });
