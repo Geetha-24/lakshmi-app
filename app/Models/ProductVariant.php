@@ -44,4 +44,9 @@ class ProductVariant extends Model
         return $this->hasOne(salesOrderDetails::class,'pv_id','id');
     }
 
+    public function purchaseBatch()
+    {
+        return $this->hasMany(PurchaseBatch::class,'pv_id','id');
+    }
+
 }

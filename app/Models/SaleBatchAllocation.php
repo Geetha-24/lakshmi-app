@@ -17,5 +17,10 @@ class SaleBatchAllocation extends Model
     {
         return $this->belongsTo(salesOrderDetails::class,'so_detail_id','id');
     }
+
+    public function purchaseBatch()
+    {
+        return $this->belongsTo(PurchaseBatch::class,'pb_id','id');
+    }
     
 }
