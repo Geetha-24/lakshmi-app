@@ -1,23 +1,8 @@
-/* ============================= */
-/* Navigation Group (Header)     */
-/* ============================= */
-.fi-sidebar-group-label {
-    color: #0f766e !important; /* Teal / Green */
-    font-weight: 600;
-    font-size: 0.85rem;
-    text-transform: uppercase;
+.po-total-stat {
+    background-color: rgb(239 246 255); /* blue-50 */
+    border-radius: 0.75rem;
 }
 
-/* ============================= */
-/* Navigation Resources (Items)  */
-/* ============================= */
-.fi-sidebar-item-label {
-    color: #334155 !important; /* Slate */
-    font-weight: 500;
-}
-
-/* Active resource */
-.fi-sidebar-item-active .fi-sidebar-item-label {
-    color: #2563eb !important; /* Blue */
-    font-weight: 600;
+.dark .po-total-stat {
+    background-color: rgba(30, 58, 138, 0.3); /* blue-900/30 */
 }

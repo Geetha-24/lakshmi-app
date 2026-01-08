@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\CustomerResource\Pages;
 use App\Filament\Resources\CustomerResource\RelationManagers;
+use App\Filament\Resources\CustomerResource\RelationManagers\PaymentRelationManager;
+use App\Filament\Resources\CustomerResource\RelationManagers\SalesOrderRelationManager;
 use App\Models\Customer;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -72,12 +74,16 @@ class CustomerResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                 Tables\Actions\ViewAction::make()->label('History')->icon('heroicon-o-clock')
+                ->color('primary'),
                 Tables\Actions\DeleteAction::make()->action(function ($record) {
                     $record->status = 1;
                     $record->save();
 
                     $record->delete(); // soft delete
-                    })
+                    }),
+               
+
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -89,7 +95,8 @@ class CustomerResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            SalesOrderRelationManager::class,
+            PaymentRelationManager::class,
         ];
     }
 
@@ -99,6 +106,7 @@ class CustomerResource extends Resource
             'index' => Pages\ListCustomers::route('/'),
             'create' => Pages\CreateCustomer::route('/create'),
             'edit' => Pages\EditCustomer::route('/{record}/edit'),
+            'view'=> Pages\ViewCustomer::route('/{record}')
         ];
     }
 }

@@ -15,7 +15,7 @@ class Customer extends Model
 
     public function SalesOrder()
     {
-        return $this->hasOne(SalesOrder::class,'customer_id','id');
+        return $this->hasMany(SalesOrder::class,'customer_id','id');
     }
 
     public function Payment()
