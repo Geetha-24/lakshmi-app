@@ -12,6 +12,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\Filter;
 
 class ProductVariantResource extends Resource
 {
@@ -100,9 +102,38 @@ class ProductVariantResource extends Resource
                 Tables\Columns\TextColumn::make('status')->label('Active\InActive')
                 ->formatStateUsing(fn ($state) => (string) $state === '0' ? 'Active' : 'Inactive'),
             ])
-            ->filters([
-                //
-            ])
+           ->filters([
+            SelectFilter::make('sort_by')
+                ->label('Sort By')
+                ->options([
+                    'latest' => 'Latest',
+                    'p_name' => 'Product (A → Z)',
+                    'h_stock'  => 'High Stock',
+                    'l_stock'  =>  'Low Stock'
+
+                ])
+                ->query(fn (Builder $query) => $query), // 🔥 stop WHERE clause
+        ])
+        ->modifyQueryUsing(function (Builder $query, $livewire) {
+
+            $sortBy = data_get($livewire, 'tableFilters.sort_by.value');
+            logger()->info($query->toSql());
+            if ($sortBy === 'latest') {
+                $query->reorder('created_at', 'desc');
+            }
+
+            if ($sortBy === 'p_name') {
+                $query->reorder('p_name', 'asc');
+            }
+
+             if ($sortBy === 'h_stock') {
+                $query->reorder('p_name', 'asc');
+            }
+            if ($sortBy === 'l_stock') {
+                $query->reorder('p_name', 'desc');
+            }
+            logger()->info($query->toSql());
+        })
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make(),

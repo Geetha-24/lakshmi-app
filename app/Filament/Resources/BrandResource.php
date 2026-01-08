@@ -12,6 +12,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\Filter;
 
 class BrandResource extends Resource
 {
@@ -43,14 +45,54 @@ class BrandResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable(isIndividual: true),
                Tables\Columns\TextColumn::make('status')->label('Status')
                 ->formatStateUsing(fn ($state) => (string) $state === '0' ? 'Active' : 'Inactive'),
 
             ])
+            // ->filters([
+            //     SelectFilter::make('sort_by')
+            //         ->label('Sort By')
+            //         ->options([
+            //             'latest' => 'Latest',
+            //             'name'   => 'Brand Name (A → Z)',
+            //         ])
+            //         ->query(function (Builder $query, array $data) {
+
+            //             $query = match ($data['value'] ?? null) {
+            //                 'latest' => $query->orderBy('created_at', 'desc'),
+            //                 'name'   => $query->orderBy('name'),
+            //                 default  => $query,
+            //             };
+            //             logger()->info($data['value']);
+
+            //             logger()->info($query->toSql());
+
+            //             return $query;
+            //         })
+            // ])
             ->filters([
-                //
-            ])
+            SelectFilter::make('sort_by')
+                ->label('Sort By')
+                ->options([
+                    'latest' => 'Latest',
+                    'name'   => 'Brand Name (A → Z)',
+                ])
+                ->query(fn (Builder $query) => $query), // 🔥 stop WHERE clause
+        ])
+        ->modifyQueryUsing(function (Builder $query, $livewire) {
+
+            $sortBy = data_get($livewire, 'tableFilters.sort_by.value');
+            logger()->info($query->toSql());
+            if ($sortBy === 'latest') {
+                $query->reorder('created_at', 'desc');
+            }
+
+            if ($sortBy === 'name') {
+                $query->reorder('name', 'asc');
+            }
+            logger()->info($query->toSql());
+        })
             ->actions([
                 Tables\Actions\EditAction::make(),
                  Tables\Actions\DeleteAction::make()->action(function ($record) {
