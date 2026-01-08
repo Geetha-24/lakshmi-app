@@ -10,19 +10,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Infolists\Infolist;
-use Filament\Infolists;
-use Filament\Infolists\Components\Section;
-// use Filament\Infolists\Components\Actions\Action;
-use Filament\Forms\Components\TextInput;
-use App\Services\PostStockItem;
-use Filament\Facades\Filament;
-use Filament\Infolists\Components\Actions;
-use Filament\Infolists\Components\Actions\Action;
-
-
-
-
 
 class PurchaseOrderResource extends Resource
 {
@@ -256,4 +243,6 @@ class PurchaseOrderResource extends Resource
     //         ['order' => $record]
     //     );
     // }
+
+    
 }
