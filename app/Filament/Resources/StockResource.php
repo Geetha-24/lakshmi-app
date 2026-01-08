@@ -6,12 +6,16 @@ use App\Filament\Resources\StockResource\Pages;
 use App\Filament\Resources\StockResource\RelationManagers;
 use App\Models\ProductVariant;
 use Filament\Forms;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+
 
 class StockResource extends Resource
 {
@@ -157,14 +161,55 @@ class StockResource extends Resource
                     ->label('Posted Stock In Hand'),
 
                 Tables\Columns\TextColumn::make('sold_stock')
-                    ->label('Sold Stock')->default(0)
+                    ->label('Sold Stock')->default(0)->sortable()
 
 
 
             ])
-            ->filters([
-                //
+           ->filters([
+           
+            SelectFilter::make('sort_by')
+                ->label('Sort By')
+                ->options([
+                    'latest' => 'Latest',
+                    'oldest' => 'Oldest',
+                     'in' => 'In Stock',
+                     'out' => 'Out of Stock',
+                     'high_sales'=> 'High Sales',
+                     'low_sales' => 'Low Sales',
+                     'unpost' => 'Unpost Stock'
+
+                ])
+                ->query(fn (Builder $query) => $query), // 🔥 stop WHERE clause
             ])
+            ->modifyQueryUsing(function (Builder $query, $livewire) {
+
+                $sortBy = data_get($livewire, 'tableFilters.sort_by.value');
+                if ($sortBy === 'latest') {
+                    $query->reorder('created_at', 'desc');
+                }
+
+                if ($sortBy === 'oldest') {
+                    $query->reorder('created_at', 'asc');
+                }
+                if ($sortBy === 'in') {
+                    $query->having('available_stock','>',0);
+                }
+                 if ($sortBy === 'out') {
+                    $query->having('available_stock','<=',0);
+                }
+                if ($sortBy === 'high_sales') {
+                    $query->having('sold_stock','>',0);
+                }
+                if ($sortBy === 'low_sales') {
+                    $query->having('sold_stock','<',0);
+                }
+                if($sortBy === 'unpost')
+                {
+                    $query->having('unposted_stock','>',0);
+                }
+                logger()->info($query->toSql());
+            })
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make()->label('Batch'),

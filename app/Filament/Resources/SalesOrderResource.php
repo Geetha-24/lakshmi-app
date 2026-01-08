@@ -23,6 +23,7 @@ use Awcodes\TableRepeater\Components\TableRepeater;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Actions\Action;
+use Filament\Tables\Filters\SelectFilter;
 
 class SalesOrderResource extends Resource
 {
@@ -318,9 +319,34 @@ class SalesOrderResource extends Resource
 
 
             ])
-            ->filters([
-                //
-            ])
+           ->filters([
+            SelectFilter::make('status')
+                ->options([
+                    'draft' => 'Draft',
+                    'confirmed' => 'Confirmed',
+                ]),
+            SelectFilter::make('sort_by')
+                ->label('Sort By')
+                ->options([
+                    'latest' => 'Latest',
+                    'oldest' => 'Oldest'
+
+                ])
+                ->query(fn (Builder $query) => $query), // 🔥 stop WHERE clause
+        ])
+        ->modifyQueryUsing(function (Builder $query, $livewire) {
+
+            $sortBy = data_get($livewire, 'tableFilters.sort_by.value');
+            logger()->info($query->toSql());
+            if ($sortBy === 'latest') {
+                $query->reorder('created_at', 'desc');
+            }
+
+            if ($sortBy === 'oldest') {
+                $query->reorder('created_at', 'asc');
+            }
+            logger()->info($query->toSql());
+        })
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ViewAction::make(),
