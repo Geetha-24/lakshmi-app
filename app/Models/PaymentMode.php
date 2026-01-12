@@ -14,4 +14,5 @@ class PaymentMode extends Model
     {
         return $this->hasOne(Payment::class,'payment_mode_id','id');
     }
+
 }

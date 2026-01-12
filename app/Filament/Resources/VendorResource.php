@@ -37,7 +37,12 @@ class VendorResource extends Resource
                 ->options([
                     0 =>"Active",
                     1=>"InActive"
-                ])->required()->default(0)
+                ])->required()->default(0),
+                Forms\Components\Select::make('payment_settlement_type')
+                ->options([
+                    1 =>"Bill-Wise",
+                    2 =>"On-Account"
+                ])->required()->default(1)
 
 
             ]);
@@ -59,6 +64,7 @@ class VendorResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()->label('History')->icon('heroicon-o-clock')->color('primary'),
                 Tables\Actions\DeleteAction::make()->action(function ($record) {
                     $record->status = 1;
                     $record->save();
@@ -88,6 +94,8 @@ class VendorResource extends Resource
             'index' => Pages\ListVendors::route('/'),
             'create' => Pages\CreateVendor::route('/create'),
             'edit' => Pages\EditVendor::route('/{record}/edit'),
+            'view' => Pages\ViewVendor::route('/{record}'),
+
         ];
     }
 

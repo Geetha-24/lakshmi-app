@@ -29,6 +29,7 @@ class ListPurchaseOrders extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
+             Actions\CreateAction::make(),
             \Filament\Actions\Action::make('filters')
                 ->label('Filter Summary')
                 ->form([
