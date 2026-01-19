@@ -25,7 +25,7 @@ class PurchaseOrder extends Model
 
     public function vpsettlement()
     {
-        return $this->hasMany(VendorPaymentSettlement::class,'po_id');
+        return $this->hasMany(VendorPaymentSettlement::class,'po_id','id');
     }
 
     

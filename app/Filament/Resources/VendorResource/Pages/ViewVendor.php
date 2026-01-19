@@ -13,6 +13,10 @@ use Filament\Widgets\StatsOverviewWidget\Stat;
 use Filament\Forms\Components\Select;
 use App\Services\VendorPaymentService;
 use Filament\Actions\Action;
+use Filament\Infolists\Components\Grid;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 
 class ViewVendor extends ViewRecord
 {
@@ -59,6 +63,33 @@ class ViewVendor extends ViewRecord
         ->title("Vendor Updation")
         ->body("The Vendor has been updated successfully");
     
+    }
+
+    public function infolist(Infolist $infolist): Infolist
+    {
+        
+        return Infolist::make()
+            ->record($this->record)
+            ->schema([
+                Section::make('Vendor Info')
+                    ->schema([
+                        Grid::make(4)->schema([
+                            TextEntry::make('name')
+                                ->label('Vendor Name'),
+
+                            TextEntry::make('contactno')
+                                ->label('Contact No'),
+
+                            TextEntry::make('whatsappno')
+                                ->label('Whatsapp No'),
+                                
+                            TextEntry::make('payment_settlement_type')
+                                ->label('Settlement Mode')
+                                ->formatStateUsing(fn ($state) => (string) $state === '1' ? 'Bill-Wise' : 'On-Account'),
+                        ]),
+                    ])
+                    ->collapsible(false),
+            ]);
     }
 
 }

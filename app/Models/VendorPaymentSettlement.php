@@ -16,11 +16,11 @@ class VendorPaymentSettlement extends Model
 
     public function purchaseInvoice()
     {
-        return $this->belongsTo(PurchaseOrder::class,'po_id');
+        return $this->belongsTo(PurchaseOrder::class,'po_id','id');
     }
 
     public function vendorPay()
     {
-        return $this->belongsTo(VendorPayment::class,'vandor_payment_id');
+        return $this->belongsTo(VendorPayment::class,'vendor_payment_id','id');
     }
 }

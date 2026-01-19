@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\VendorResource\Pages;
 use App\Filament\Resources\VendorResource\RelationManagers;
+use App\Filament\Resources\VendorResource\RelationManagers\PurchaseOrdersRelationManager;
+use App\Filament\Resources\VendorResource\RelationManagers\VendorPaymentsRelationManager;
 use App\Models\Vendor;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -64,7 +66,7 @@ class VendorResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\ViewAction::make()->label('History')->icon('heroicon-o-clock')->color('primary'),
+                Tables\Actions\ViewAction::make()->label('Payment')->icon('heroicon-o-clock')->color('primary'),
                 Tables\Actions\DeleteAction::make()->action(function ($record) {
                     $record->status = 1;
                     $record->save();
@@ -84,7 +86,8 @@ class VendorResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            PurchaseOrdersRelationManager::class,
+            VendorPaymentsRelationManager::class
         ];
     }
 

@@ -34,5 +34,16 @@ class Vendor extends Model
         return $this->hasMany(VendorLedger::class);
     }
 
+public function paymentSettlements()
+{
+    return $this->hasManyThrough(
+        VendorPaymentSettlement::class,
+        VendorPayment::class,
+        'vendor_id',          // Foreign key on vendor_payments
+        'vendor_payment_id',  // Foreign key on settlements
+        'id',
+        'id'
+    );
+}
 
 }
