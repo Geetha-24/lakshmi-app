@@ -49,4 +49,9 @@ class ProductVariant extends Model
         return $this->hasMany(PurchaseBatch::class,'pv_id','id');
     }
 
+     public function salesReturnItem()
+    {
+        return $this->hasOne(SalesReturnItem::class,'pv_id','id');
+    }
+
 }

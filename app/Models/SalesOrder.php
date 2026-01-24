@@ -49,4 +49,8 @@ class SalesOrder extends Model
         return $this->hasMany(Payment::class,'so_id','id');
     }
 
+    public function salesReturn()
+    {
+        return $this->hasOne(SalesReturn::class,'so_id','id');
+    }
 }

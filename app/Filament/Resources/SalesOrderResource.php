@@ -200,6 +200,7 @@ class SalesOrderResource extends Resource
                             TextInput::make('sold_price')
                                 ->label('Rate')
                                 ->numeric()
+                                ->live(onBlur:true)
                                 ->required(),
 
                             Placeholder::make('line_total')
@@ -210,6 +211,7 @@ class SalesOrderResource extends Resource
                                         2
                                     )
                                 ),
+                            
                         ])
                         ->saveRelationshipsUsing(function () {
                             // 🚫 STOP FILAMENT FROM SAVING ANYTHING
@@ -313,7 +315,24 @@ class SalesOrderResource extends Resource
                 // ->sortable(),
                 Tables\Columns\TextColumn::make('total_profit')->badge()
                  ->label('Profit / Loss')
-                 ->color(fn ($state) => $state >= 0 ? 'success' : 'danger')
+                 ->color(fn ($state) => $state >= 0 ? 'success' : 'danger'),
+                 Tables\Columns\TextColumn::make('return_status')
+                ->label('Return')
+                ->getStateUsing(function ($record) {
+                    $returned = $record->salesOrderdetails->sum('returned_qty');
+                    $total = $record->salesOrderdetails->sum('quantity');
+
+                    return match (true) {
+                        $returned == 0 => 'No Return',
+                        $returned < $total => 'Partial',
+                        default => 'Full',
+                    };
+                })
+                ->colors([
+                    'gray' => 'No Return',
+                    'warning' => 'Partial',
+                    'success' => 'Full',
+                ])
 
 
 
