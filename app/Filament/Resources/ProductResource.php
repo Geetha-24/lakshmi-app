@@ -107,6 +107,8 @@ class ProductResource extends Resource
 
     $brand = \App\Models\Brand::find($brandId)?->name;
     $category = \App\Models\Category::find($categoryId)?->name;
+    $category  = preg_replace('/\s+/', '_', trim($category));
+
 
     $set('name', strtoupper("{$brand}_{$category}"));
     }

@@ -15,6 +15,8 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Enums\FiltersLayout;
+
 
 
 class StockResource extends Resource
@@ -181,10 +183,25 @@ class StockResource extends Resource
 
                 ])
                 ->query(fn (Builder $query) => $query), // 🔥 stop WHERE clause
+                SelectFilter::make('category')
+                ->label('Category')
+                ->relationship('product.category','name')
+                ->query(fn (Builder $query) => $query), // 🔥 stop WHERE clause
+                SelectFilter::make('packing_type')
+                ->label('packing Type')
+                ->relationship('packing_type','name')
+                ->query(fn (Builder $query) => $query),
+
             ])
+            ->filtersLayout(FiltersLayout::AboveContentCollapsible)
+
             ->modifyQueryUsing(function (Builder $query, $livewire) {
 
                 $sortBy = data_get($livewire, 'tableFilters.sort_by.value');
+                $category = data_get($livewire, 'tableFilters.category.value');
+                $packing = data_get($livewire, 'tableFilters.packing_type.value');
+
+
                 if ($sortBy === 'latest') {
                     $query->reorder('created_at', 'desc');
                 }
@@ -207,6 +224,18 @@ class StockResource extends Resource
                 if($sortBy === 'unpost')
                 {
                     $query->having('unposted_stock','>',0);
+                }
+                if($category)
+                {
+                    $query->whereHas('product.category', function($q)use($category) {
+                     $q->where('id', $category);
+                });
+                }
+                if($packing)
+                {
+                    $query->whereHas('packing_type', function($q)use($packing) {
+                     $q->where('id', $packing);
+                });
                 }
                 logger()->info($query->toSql());
             })

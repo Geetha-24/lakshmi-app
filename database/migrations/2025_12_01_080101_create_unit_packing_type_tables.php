@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('units_table', function (Blueprint $table) {
+        Schema::create('units', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->string('symbol');
@@ -20,7 +20,7 @@ return new class extends Migration
             $table->softDeletes();
         });
 
-         Schema::create('packing_types_table', function (Blueprint $table) {
+         Schema::create('packing_types', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->integer('status');

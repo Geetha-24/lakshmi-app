@@ -28,6 +28,9 @@ class SalesReturnResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+        protected static ?string $navigationGroup = 'Sales';
+
+
     public static function form(Form $form): Form
     {
     return $form->schema([
@@ -81,6 +84,13 @@ class SalesReturnResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('return_no')->label('Return No'),
+                TextColumn::make('salesOrder.so_number')->label('sales Order No')
+                ->url(fn ($record) =>
+                    route(
+                        'filament.admin.resources.sales-orders.edit',
+                        $record->so_id
+                    )
+                )->color('primary'),
                 TextColumn::make('customer.name')->label('Customer Name'),
                 TextColumn::make('return_date')->date()->label('Date'),
                 TextColumn::make('refund_amount')->label('Refund Amount')->money('INR'),
