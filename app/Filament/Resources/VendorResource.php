@@ -3,7 +3,6 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\VendorResource\Pages;
-use App\Filament\Resources\VendorResource\RelationManagers;
 use App\Filament\Resources\VendorResource\RelationManagers\PurchaseOrdersRelationManager;
 use App\Filament\Resources\VendorResource\RelationManagers\VendorPaymentsRelationManager;
 use App\Models\Vendor;
@@ -54,7 +53,7 @@ class VendorResource extends Resource
     {
         return $table
              ->columns([
-                Tables\columns\TextColumn::make('name')->label('Vendor Name')->sortable(true)->icon('heroicon-arrow'),
+                Tables\columns\TextColumn::make('name')->label('Vendor Name')->sortable(true),
                 Tables\Columns\TextColumn::make('mill_name')->label('Mill/Shop Name')->searchable(),
                 Tables\Columns\TextColumn::make('contactno')->label('PhoneNo'),
                 Tables\Columns\TextColumn::make('status')->label('Status')
