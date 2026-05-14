@@ -1,0 +1,119 @@
+body{
+    font-family: 'Poppins', sans-serif;
+    /* background-color: seashell; */
+    margin :0;
+    padding: 0;
+}
+header{
+    display: flex;
+    gap:20px;
+    justify-content: space-between;
+    padding: 10px 20px 10px 20px;
+    
+}
+header h3{
+    padding-left: 40px;
+}
+
+.home-navigation{
+    margin-left: auto;
+}
+.home-navigation ul{
+    display: flex;
+    gap:30px;
+    justify-content: space-between;
+    list-style-type: none;
+}
+
+.home-navigation ul li{
+    color: lightcoral;
+    text-transform: uppercase;
+}
+.contact-us{
+    background-color: lightcoral;
+    color: white;
+    border-radius: 20px;
+    border-color: lightcoral;
+    border-style: none;
+    padding: 10px;
+    height: auto;
+    margin : 10px 40px 10px 80px;
+
+    
+}
+.first-section{
+    padding: 20px; 
+    background-image: url(images/cooking_oil.webp);
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 300px;
+    background-position: relative;
+    opacity: 0.8;
+
+}
+.first-section h1{
+    padding:20px;
+    /* color:yellowgreen; */
+    font-style: bold;
+    text-align: center;
+    font-size:60px;
+    color: #ff7a18;
+}
+.first-section p{
+    padding: 10px;
+    color:white;
+    text-align: center;
+}
+.first-section h4{
+    text-align: center;
+    border: 1px solid white;
+    border-radius: 20px;
+    color:white;
+    text-transform: capitalize;
+    display: inline-block;
+    /* width: 120px; */
+    margin: 0px 600px;
+    padding : 0px 20px;
+    
+
+
+}
+.second-section{
+    display: flex;
+}
+.card {
+    padding:60px;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.subtitle1 h2::after{
+  content: "";
+  display: block;
+  width: 60px;        /* controls underline length */
+  height: 3px;        /* thickness */
+  margin-top: 8px; 
+  background-color: white /* change per card */
+}
+.subtitle2 h2::after,
+.subtitle3 h2::after{
+  content: "";
+  display: block;
+  width: 60px;        /* controls underline length */
+  height: 3px;        /* thickness */
+  margin-top: 8px; 
+  padding-left: 2px;   /* space from text */
+  background-color: whitesmoke; /* change per card */
+}
+.subtitle1{
+  background-color: rgb(246, 169, 169);
+  color:white;
+
+}
+.subtitle2{
+    background-color: rgb(242, 157, 157);
+    color:white;
+}
+.subtitle3{
+    background-color: rgb(222, 110, 110);
+    color:white;
+}
