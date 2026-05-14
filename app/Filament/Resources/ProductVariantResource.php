@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductVariantResource\Pages;
 use App\Filament\Resources\ProductVariantResource\RelationManagers;
+use App\Models\Category;
 use App\Models\ProductVariant;
 use Filament\Forms;
 use Filament\Forms\Form;

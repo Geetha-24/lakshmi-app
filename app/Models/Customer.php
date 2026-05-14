@@ -29,5 +29,10 @@ class Customer extends Model
         return $this->hasOne(CustomersLedger::class,'c_id','id');
     }
 
+    public function salesReturn()
+    {
+        return $this->hasOne(SalesReturn::class,'customer_id','id');
+    }
+
 
 }

@@ -19,6 +19,7 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Placeholder;
+use Filament\Tables\Columns\TextColumn;
 
 class PaymentResource extends Resource
 {
@@ -136,7 +137,10 @@ class PaymentResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('salesOrder.so_number')->label('Order No'),
+                TextColumn::make('customer.name')->label('Customer'),
+                TextColumn::make('payment_date')->label('Date'),
+                TextColumn::make('amount')->label('Amount')->money('INR')
             ])
             ->filters([
                 //
@@ -161,9 +165,11 @@ class PaymentResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListPayments::route('/'),
+            'index' => Pages\PaymentList::route('/'),
             'create' => Pages\CreatePayment::route('/create'),
             'edit' => Pages\EditPayment::route('/{record}/edit'),
         ];
     }
+
+    
 }

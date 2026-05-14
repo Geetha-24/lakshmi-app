@@ -34,6 +34,12 @@ class AdminPanelProvider extends PanelProvider
              ->colors([
             'primary' => \Filament\Support\Colors\Color::Teal, // Green theme
             ]) 
+            ->brandName('Sri Lakshmi Traders')
+            ->brandLogo(asset('images/lakshmilogo2.png'))
+            ->brandLogoHeight('3.75rem') // ✅ between 2.5–3rem
+
+
+
             
 
             

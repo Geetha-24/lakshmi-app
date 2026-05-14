@@ -26,7 +26,7 @@ class SalesStockService
 
             if ($remainingQty <= 0) break;
 
-            $available = $batch->total_stock_in - $batch->sold_qty;
+            $available = ($batch->total_stock_in - $batch->sold_qty)+$batch->returned_qty;
             $consume   = min($available, $remainingQty);
 
             $profit =

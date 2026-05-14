@@ -3,7 +3,8 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\VendorResource\Pages;
-use App\Filament\Resources\VendorResource\RelationManagers;
+use App\Filament\Resources\VendorResource\RelationManagers\PurchaseOrdersRelationManager;
+use App\Filament\Resources\VendorResource\RelationManagers\VendorPaymentsRelationManager;
 use App\Models\Vendor;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -37,7 +38,12 @@ class VendorResource extends Resource
                 ->options([
                     0 =>"Active",
                     1=>"InActive"
-                ])->required()->default(0)
+                ])->required()->default(0),
+                Forms\Components\Select::make('payment_settlement_type')
+                ->options([
+                    1 =>"Bill-Wise",
+                    2 =>"On-Account"
+                ])->required()->default(1)
 
 
             ]);
@@ -47,18 +53,20 @@ class VendorResource extends Resource
     {
         return $table
              ->columns([
-                Tables\columns\TextColumn::make('name')->label('Vendor Name'),
+                Tables\columns\TextColumn::make('name')->label('Vendor Name')->sortable(true),
                 Tables\Columns\TextColumn::make('mill_name')->label('Mill/Shop Name')->searchable(),
                 Tables\Columns\TextColumn::make('contactno')->label('PhoneNo'),
                 Tables\Columns\TextColumn::make('status')->label('Status')
                 ->formatStateUsing(fn ($state) => (string) $state === '0' ? 'Active' : 'Inactive'),
 
             ])
+            ->defaultSort('name','asc')
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make()->label('Payment')->icon('heroicon-o-clock')->color('primary'),
                 Tables\Actions\DeleteAction::make()->action(function ($record) {
                     $record->status = 1;
                     $record->save();
@@ -78,7 +86,8 @@ class VendorResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            PurchaseOrdersRelationManager::class,
+            VendorPaymentsRelationManager::class
         ];
     }
 
@@ -88,6 +97,8 @@ class VendorResource extends Resource
             'index' => Pages\ListVendors::route('/'),
             'create' => Pages\CreateVendor::route('/create'),
             'edit' => Pages\EditVendor::route('/{record}/edit'),
+            'view' => Pages\ViewVendor::route('/{record}'),
+
         ];
     }
 

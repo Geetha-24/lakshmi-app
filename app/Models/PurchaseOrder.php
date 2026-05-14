@@ -11,7 +11,7 @@ class PurchaseOrder extends Model
     use HasFactory,SoftDeletes;
 
     protected $table = 'purchase_order';
-    protected $fillable = ['vendor_id','invoice_number','invoice_date','gross_amount','tax_amount','discount_amount','net_amount','paid_amount','due_amount','payment_status','status'];
+    protected $fillable = ['vendor_id','invoice_number','invoice_date','gross_amount','tax_amount','discount_amount','net_amount','paid_amount','due_amount','payment_status','payment_mode_id','status'];
 
     public function vendor()
     { 
@@ -21,6 +21,11 @@ class PurchaseOrder extends Model
     public function purchaseOrderDetails()
     {
         return $this->hasMany(PurchaseOrderDetail::class,'po_id','id');
+    }
+
+    public function vpsettlement()
+    {
+        return $this->hasMany(VendorPaymentSettlement::class,'po_id','id');
     }
 
     

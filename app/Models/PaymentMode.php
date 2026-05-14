@@ -14,4 +14,10 @@ class PaymentMode extends Model
     {
         return $this->hasOne(Payment::class,'payment_mode_id','id');
     }
+
+    public function vendorpayment()
+    {
+        return $this->hasOne(vendorpayment::class,'payment_mode','id');
+    }
+
 }

@@ -23,7 +23,8 @@ return new class extends Migration
             $table->double('net_amount')->nullable();
             $table->double('paid_amount')->nullable();
             $table->double('due_amount')->nullable();
-            $table->integer('payment_status');
+            $table->string('payment_status');
+            $table->integer('payment_mode_id')->nullable();
             $table->integer('status');
             $table->softDeletes();
             $table->timestamps();

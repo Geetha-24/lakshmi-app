@@ -33,12 +33,15 @@ class PurchaseOrderResource extends Resource
                 Forms\Components\TextInput::make('net_amount')->required()->default(0),
                 Forms\Components\TextInput::make('paid_amount')->required()->default(0),
                 Forms\Components\TextInput::make('due_amount')->required()->default(0),
-                Forms\Components\Select::make('payment_status')
-                ->options([
-                    0 =>"On Cash",
-                    1=>"Cheque",
-                    2=>'Credit'
-                ])->required()->default(2),
+                Forms\Components\Select::make('payment_mode_id')->label('Payment Mode')
+               ->options(\App\Models\PaymentMode::query()
+                ->pluck('mode', 'id')
+                ->toArray())->required()->searchable()->default(3),
+                Forms\Components\Select::make('payment_status')->options([
+                    'unpaid'=>'unpaid',
+                    'partial' => 'partial',
+                    'paid'=>'paid'
+                ]),
                 Forms\Components\Radio::make('status')
                 ->options([
                     0 =>"Active",

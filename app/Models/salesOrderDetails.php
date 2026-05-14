@@ -12,7 +12,7 @@ class salesOrderDetails extends Model
 
     protected $table = 'so_detail';
 
-    protected $fillable = ['so_id','pv_id','quantity','fixed_selling_price','sold_price','line_total','line_profit','status'];
+    protected $fillable = ['so_id','pv_id','quantity','fixed_selling_price','sold_price','line_total','line_profit','status','returned_qty'];
 
     public function SalesOrder()
     {
@@ -27,5 +27,10 @@ class salesOrderDetails extends Model
     public function SalesBatch()
     {
         return $this->hasOne(SaleBatchAllocation::class,'so_detail_id','id');
+    }
+
+    public function salesReturnItem()
+    {
+        return $this->hasOne(SalesReturnItem::class,'so_detail_id','id');
     }
 }

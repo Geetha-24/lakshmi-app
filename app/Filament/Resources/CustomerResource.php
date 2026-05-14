@@ -52,7 +52,7 @@ class CustomerResource extends Resource
     {
         return $table
             ->columns([
-                Tables\columns\TextColumn::make('name')->label('Customer Name'),
+                Tables\columns\TextColumn::make('name')->label('Customer Name')->sortable(true),
                 Tables\Columns\TextColumn::make('mill_name')->label('Shop Name')->searchable(),
                 Tables\Columns\TextColumn::make('contactno')->label('Phone No'),
                 Tables\Columns\TextColumn::make('balance')
@@ -62,13 +62,13 @@ class CustomerResource extends Resource
                         ->orderByDesc('created_at')
                         ->value('balance_after') ?? 0;
                 })
-                ->money('INR', true),
+                ->money('INR', true)->sortable(true),
                 Tables\Columns\TextColumn::make('type')->label('Customer Type')
                 ->formatStateUsing(fn ($state) => (string) $state === '0' ? 'WholeSale' : 'Retail'),
                 Tables\Columns\TextColumn::make('status')->label('Status')
                 ->formatStateUsing(fn ($state) => (string) $state === '0' ? 'Active' : 'Inactive'),
 
-            ])
+            ])->defaultSort('name','asc')
             ->filters([
                 //
             ])

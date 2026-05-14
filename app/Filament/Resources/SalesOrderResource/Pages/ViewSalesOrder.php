@@ -4,6 +4,7 @@ namespace App\Filament\Resources\SalesOrderResource\Pages;
 
 use App\Filament\Resources\SalesOrderResource;
 use Filament\Actions;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Infolists\Infolist;
 use Filament\Infolists\Components\Section;
@@ -57,6 +58,21 @@ class ViewSalesOrder extends ViewRecord
                         'so_id' => $this->record->id,
                     ])
                 ),
+
+                
+                Action::make('salesReturn')
+                ->label(fn()=>$this->record->salesReturn()->where('status','confirmed')->exists() ? 'Order Returned' : 'Sales Return')
+                ->icon('heroicon-o-arrow-uturn-left')
+                ->visible(fn () =>
+                     $this->record->status == 'confirmed'
+                    && $this->record->salesOrderDetails()->whereColumn('returned_qty', '<=', 'quantity')->exists()
+                )
+                ->url(fn () =>
+                    route('filament.admin.resources.sales-returns.create', [
+                        'so_id' => $this->record->id,
+                    ])
+                )
+
         ];
     }
 
@@ -74,7 +90,7 @@ class ViewSalesOrder extends ViewRecord
                  * ORDER INFO
                  * =============================== */
                 Section::make('Sales Order')
-                    ->columns(4)
+                    ->columns(5)
                     ->schema([
 
                         TextEntry::make('so_number')
@@ -118,7 +134,22 @@ class ViewSalesOrder extends ViewRecord
                                 TextEntry::make('line_total')
                                     ->label('Amount')
                                     ->money('INR'),
+
+                                TextEntry::make('returned_qty')
+                                ->label('Returned')
+                                ->badge()
+                                    ->color(fn (int $state,object $record): string => match (true) {
+                                        0 => 'gray',
+                                        $state > 0 && $state < $record->quantity => 'warning',
+                                        $state == $record->quantity => 'success',
+
+                                    })
+                                
+                                ->formatStateUsing(fn ($state, $record) =>
+                                    "{$state} / {$record->quantity}"
+                                )
                             ]),
+
                     ]),
 
                 /* ===============================
